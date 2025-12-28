@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>С Новым Годом!</title>
+  <title>с новой годой</title>
   <style>
     * {
       margin: 0;
@@ -82,7 +82,7 @@
     .modal-content {
       background: #000;
       border: 1px solid #00ff41;
-      padding: 25px;
+      padding: 20px; /* Уменьшили отступы */
       text-align: center;
       box-shadow: 0 0 20px #00ff41;
       max-width: 90%;
@@ -91,13 +91,13 @@
     }
 
     .modal-content h3 {
-      margin-bottom: 15px;
+      margin-bottom: 10px; /* Уменьшили отступ */
       color: #00ff41;
     }
 
     #pass-display {
       width: 100%;
-      padding: 10px 0;
+      padding: 5px 0; /* Уменьшили padding */
       font-family: 'Courier New', monospace;
       font-size: 1.4rem;
       background: transparent;
@@ -105,7 +105,7 @@
       border: none;
       text-align: center;
       letter-spacing: 8px;
-      margin-bottom: 15px;
+      margin: 10px 0; /* Уменьшили margin */
       outline: none;
       cursor: default;
       user-select: none;
@@ -136,9 +136,9 @@
 
     /* Картинка котика */
     .cat-image {
-      width: 80px;
-      height: 80px;
-      margin: 15px auto 15px;
+      width: 70px;
+      height: 70px;
+      margin: 10px auto 10px; /* Уменьшили margin */
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
     }
@@ -147,8 +147,8 @@
     #numpad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 15px;
+      gap: 8px; /* Уменьшили gap */
+      margin-top: 10px; /* Уменьшили margin-top */
     }
 
     .numpad-btn {
@@ -157,7 +157,7 @@
       border: 1px solid #00ff41;
       font-family: 'Courier New', monospace;
       font-size: 1.3rem;
-      padding: 12px 0;
+      padding: 10px 0; /* Уменьшили padding */
       cursor: pointer;
       transition: all 0.2s;
       outline: none;
@@ -202,8 +202,11 @@
     @media (max-width: 600px) {
       #greeting { font-size: 1.6rem; padding: 0 1rem; }
       #secret-btn { font-size: 1rem; padding: 8px 16px; }
-      .numpad-btn { padding: 10px 0; font-size: 1.1rem; }
-      .cat-image { width: 60px; height: 60px; }
+      .numpad-btn { padding: 8px 0; font-size: 1.1rem; }
+      .cat-image { width: 55px; height: 55px; }
+      .modal-content { padding: 15px; }
+      #pass-display { font-size: 1.2rem; padding: 3px 0; margin: 8px 0; }
+      #numpad { gap: 6px; margin-top: 8px; }
     }
   </style>
 </head>
@@ -217,7 +220,7 @@
     <div class="modal-content">
       <h3>🔒 Введите код доступа</h3>
       <!-- Картинка котика -->
-      <img src="cat.jpg" alt="Милый котик" class="cat-image">
+      <img src="cat.png" alt="Милый котик" class="cat-image">
       <div id="pass-display">----</div>
       <div class="error" id="error-msg"></div>
       <div class="hint" id="hint-msg">🔑 3-й месяц, 2-й день — твой особенный день.</div>
@@ -500,5 +503,3 @@
   </script>
 </body>
 </html>
-
-
