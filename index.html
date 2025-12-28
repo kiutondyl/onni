@@ -328,7 +328,7 @@ const OPENING_IMAGE = "bum.jpg";
 
       if (currentInput === CORRECT_PASSWORD) {
         playSound('success');
-        secretBtn.textContent = SECRET_MESSAGE;
+        secretBtn.innerHTML = SECRET_MESSAGE;
         secretBtn.style.cssText = `
           color: #ff69b4;
           border: 1px solid #ff69b4;
@@ -502,6 +502,7 @@ const OPENING_IMAGE = "bum.jpg";
   </script>
 </body>
 </html>
+
 
 
 
