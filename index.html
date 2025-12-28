@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>С Новым Годом!</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      color: #00ff41;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+    }
+
+    #matrix {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #greeting {
+      font-size: 2.5rem;
+      text-align: center;
+      z-index: 2;
+      text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+      opacity: 0;
+      animation: fadeIn 2s forwards 1s;
+      white-space: nowrap;
+      margin-bottom: 30px;
+    }
+
+    #secret-btn {
+      background: transparent;
+      color: #00ff41;
+      border: 1px solid #00ff41;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      z-index: 2;
+      transition: all 0.3s;
+      outline: none;
+      text-shadow: 0 0 8px #00ff41;
+    }
+
+    #secret-btn:hover {
+      background: rgba(0, 255, 65, 0.1);
+      box-shadow: 0 0 15px #00ff41;
+    }
+
+    /* Модальное окно */
+    #password-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: #000;
+      border: 1px solid #00ff41;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ff41;
+      max-width: 90%;
+      width: 320px;
+      position: relative;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+      color: #00ff41;
+    }
+
+    #pass-display {
+      width: 100%;
+      padding: 10px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 1.4rem;
+      background: transparent;
+      color: #00ff41;
+      border: none;
+      text-align: center;
+      letter-spacing: 8px;
+      margin-bottom: 15px;
+      outline: none;
+      cursor: default;
+      user-select: none;
+    }
+
+    .error {
+      color: #ff4545;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
+    .hint {
+      color: #00cc66;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      min-height: 16px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      text-align: center;
+      padding: 8px;
+      border-top: 1px dashed #00cc66;
+    }
+
+    .hint.show {
+      opacity: 1;
+    }
+
+    /* Цифровая клавиатура */
+    #numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .numpad-btn {
+      background: transparent;
+      color: #00ff41;
+      border: 1px solid #00ff41;
+      font-family: 'Courier New', monospace;
+      font-size: 1.3rem;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .numpad-btn:hover {
+      background: rgba(0, 255, 65, 0.2);
+      box-shadow: 0 0 8px #00ff41;
+    }
+
+    .numpad-btn.action {
+      grid-column: span 3;
+      background: rgba(0, 255, 65, 0.1);
+    }
+
+    /* Котик */
+    .cat {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 100px;
+      height: 100px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .cat-body {
+      position: absolute;
+      width: 60px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50% 50% 50% 50%;
+      top: 0;
+      left: 20px;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+
+    .cat-head {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50%;
+      top: -15px;
+      left: 25px;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+
+    .cat-ear {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid #fff;
+      top: -10px;
+    }
+
+    .cat-ear.left {
+      left: 15px;
+      transform: rotate(-30deg);
+    }
+
+    .cat-ear.right {
+      right: 15px;
+      transform: rotate(30deg);
+    }
+
+    .cat-eye {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #000;
+      border-radius: 50%;
+      top: 15px;
+    }
+
+    .cat-eye.left {
+      left: 15px;
+    }
+
+    .cat-eye.right {
+      right: 15px;
+    }
+
+    .cat-nose {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ff69b4;
+      border-radius: 50%;
+      top: 25px;
+      left: 27px;
+    }
+
+    .cat-mouth {
+      position: absolute;
+      width: 12px;
+      height: 4px;
+      border-bottom: 2px solid #000;
+      border-radius: 50%;
+      top: 30px;
+      left: 24px;
+    }
+
+    .cat-paw {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      bottom: -5px;
+    }
+
+    .cat-paw.left {
+      left: 20px;
+    }
+
+    .cat-paw.right {
+      right: 20px;
+    }
+
+    .cat-tail {
+      position: absolute;
+      width: 15px;
+      height: 30px;
+      background: #fff;
+      border-radius: 50% 50% 0 0;
+      bottom: -10px;
+      left: 40px;
+      transform: rotate(-45deg);
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+
+    .cat-bell {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #ffcc00;
+      border-radius: 50%;
+      top: 30px;
+      left: 27px;
+      box-shadow: 0 0 5px #ffcc00;
+    }
+
+    .heart,
+    .snowflake {
+      position: absolute;
+      pointer-events: none;
+      z-index: 3;
+      user-select: none;
+    }
+
+    .heart { font-size: 1.5rem; animation: floatUp 1.5s forwards; }
+    .snowflake { font-size: 1.2rem; opacity: 0.9; animation: fallDown 3s linear forwards; }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(-100px) rotate(20deg) scale(0.5); opacity: 0; }
+    }
+
+    @keyframes fallDown {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      #greeting { font-size: 1.6rem; padding: 0 1rem; }
+      #secret-btn { font-size: 1rem; padding: 8px 16px; }
+      .numpad-btn { padding: 10px 0; font-size: 1.1rem; }
+      .cat { width: 80px; height: 80px; }
+      .cat-body { width: 48px; height: 40px; left: 16px; }
+      .cat-head { width: 40px; height: 40px; top: -12px; left: 20px; }
+      .cat-ear { border-bottom: 16px solid #fff; }
+      .cat-ear.left { left: 12px; }
+      .cat-ear.right { right: 12px; }
+      .cat-eye { width: 6px; height: 6px; }
+      .cat-eye.left { left: 12px; }
+      .cat-eye.right { right: 12px; }
+      .cat-nose { width: 5px; height: 5px; left: 22px; }
+      .cat-mouth { width: 10px; height: 3px; left: 20px; }
+      .cat-paw { width: 8px; height: 8px; }
+      .cat-paw.left { left: 16px; }
+      .cat-paw.right { right: 16px; }
+      .cat-tail { width: 12px; height: 24px; left: 32px; }
+      .cat-bell { width: 6px; height: 6px; left: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div id="greeting"></div>
+  <button id="secret-btn">🔓 Расшифровать послание</button>
+
+  <!-- Модальное окно -->
+  <div id="password-modal">
+    <div class="modal-content">
+      <h3>🔒 Введите код доступа</h3>
+      <div id="pass-display">----</div>
+      <div class="error" id="error-msg"></div>
+      <div class="hint" id="hint-msg">🔑 Первые шаги в новый год...</div>
+      <div id="numpad">
+        <button class="numpad-btn" data-val="1">1</button>
+        <button class="numpad-btn" data-val="2">2</button>
+        <button class="numpad-btn" data-val="3">3</button>
+        <button class="numpad-btn" data-val="4">4</button>
+        <button class="numpad-btn" data-val="5">5</button>
+        <button class="numpad-btn" data-val="6">6</button>
+        <button class="numpad-btn" data-val="7">7</button>
+        <button class="numpad-btn" data-val="8">8</button>
+        <button class="numpad-btn" data-val="9">9</button>
+        <button class="numpad-btn action" id="btn-clear">← ОЧИСТИТЬ</button>
+        <button class="numpad-btn" data-val="0">0</button>
+        <button class="numpad-btn action" id="btn-submit">✅ ВВОД</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Котик -->
+  <div class="cat">
+    <div class="cat-body"></div>
+    <div class="cat-head">
+      <div class="cat-ear left"></div>
+      <div class="cat-ear right"></div>
+      <div class="cat-eye left"></div>
+      <div class="cat-eye right"></div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+      <div class="cat-bell"></div>
+    </div>
+    <div class="cat-paw left"></div>
+    <div class="cat-paw right"></div>
+    <div class="cat-tail"></div>
+  </div>
+
+  <script>
+    // === Настройки ===
+    const CORRECT_PASSWORD = "0203";
+    const SECRET_MESSAGE = "Ты — свет в этой жизни. Пусть каждый твой день будет таким же ярким, как эта ночь. ❤️";
+    const HINT_TEXT = "🔑 Первые шаги в новый год...";
+    const OPENING_IMAGE = "bum.jpg";
+
+    // === Звуки ===
+    function playSound(type) {
+      const audio = new Audio();
+      if (type === 'click') {
+        audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // короткий бип
+      } else if (type === 'success') {
+        audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // колокольчик
+      } else if (type === 'heart') {
+        audio.src = 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // сердечко
+      }
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    }
+
+    // === Matrix + Тема + Текст + Эффекты клика — без изменений ===
+    // ... (остальной код остаётся как в предыдущей версии) ...
+
+    // === КЛАВИАТУРА И ПАРОЛЬ ===
+    const secretBtn = document.getElementById('secret-btn');
+    const modal = document.getElementById('password-modal');
+    const passDisplay = document.getElementById('pass-display');
+    const errorMsg = document.getElementById('error-msg');
+    const hintMsg = document.getElementById('hint-msg');
+    const clearBtn = document.getElementById('btn-clear');
+    const submitBtn = document.getElementById('btn-submit');
+    const numpadBtns = document.querySelectorAll('.numpad-btn[data-val]');
+
+    let currentInput = "";
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    function updateDisplay() {
+      if (currentInput.length === 0) {
+        passDisplay.textContent = "----";
+      } else {
+        passDisplay.textContent = "•".repeat(currentInput.length).padEnd(4, "-");
+      }
+    }
+
+    secretBtn.addEventListener('click', () => {
+      attempts = 0;
+      currentInput = "";
+      errorMsg.textContent = '';
+      hintMsg.classList.remove('show');
+      updateDisplay();
+      modal.style.display = 'flex';
+    });
+
+    numpadBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (currentInput.length < 4) {
+          currentInput += btn.dataset.val;
+          updateDisplay();
+          playSound('click');
+        }
+      });
+    });
+
+    clearBtn.addEventListener('click', () => {
+      currentInput = "";
+      updateDisplay();
+      playSound('click');
+    });
+
+    submitBtn.addEventListener('click', checkPassword);
+
+    function checkPassword() {
+      if (currentInput.length < 4) {
+        errorMsg.textContent = '❌ Код должен содержать 4 цифры.';
+        return;
+      }
+
+      if (currentInput === CORRECT_PASSWORD) {
+        playSound('success');
+        secretBtn.textContent = SECRET_MESSAGE;
+        secretBtn.style.cssText = `
+          color: #ff69b4;
+          border: 1px solid #ff69b4;
+          box-shadow: 0 0 15px #ff69b4;
+          text-shadow: 0 0 10px #ff69b4;
+          font-size: 1rem;
+        `;
+        secretBtn.disabled = true;
+        modal.style.display = 'none';
+        showOpeningImage();
+      } else {
+        attempts++;
+        errorMsg.textContent = '❌ Неверный код.';
+        currentInput = "";
+        updateDisplay();
+
+        if (attempts >= 2 && attempts < maxAttempts) {
+          hintMsg.classList.add('show');
+        }
+
+        if (attempts >= maxAttempts) {
+          errorMsg.textContent = '🔒 Доступ заблокирован.';
+          setTimeout(() => {
+            modal.style.display = 'none';
+            secretBtn.disabled = true;
+            secretBtn.textContent = '🔒 ДОСТУП ЗАКРЫТ';
+            secretBtn.style.color = '#ff0000';
+            secretBtn.style.border = '1px solid #ff0000';
+          }, 1500);
+        }
+      }
+    }
+
+    // === Эффекты клика по фону ===
+    document.body.addEventListener('click', (e) => {
+      if (e.target.id === 'secret-btn' || e.target.closest('#password-modal')) return;
+      const x = e.clientX;
+      const y = e.clientY;
+      for (let i = 0; i < 5; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = `${x}px`;
+        heart.style.top = `${y}px`;
+        const colors = ['#ff69b4', '#ff4545', '#ffffff'];
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1600);
+      }
+      for (let i = 0; i < 8; i++) {
+        const snow = document.createElement('div');
+        snow.classList.add('snowflake');
+        snow.innerHTML = '❄';
+        snow.style.left = `${x + (Math.random() - 0.5) * 100}px`;
+        snow.style.top = `${y}px`;
+        snow.style.fontSize = `${0.8 + Math.random() * 1}rem`;
+        snow.style.opacity = 0.7 + Math.random() * 0.3;
+        document.body.appendChild(snow);
+        setTimeout(() => snow.remove(), 3100);
+      }
+      playSound('heart');
+    });
+
+    // === Открытка ===
+    function showOpeningImage() {
+      const img = document.createElement('img');
+      img.src = OPENING_IMAGE;
+      img.alt = 'Новогодняя открытка';
+      img.style.cssText = `
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90%; max-height: 90vh;
+        border: 3px solid #00ff41;
+        box-shadow: 0 0 20px #00ff41;
+        z-index: 100;
+        cursor: pointer;
+        transition: opacity 0.5s;
+        opacity: 0;
+      `;
+      document.body.appendChild(img);
+      setTimeout(() => img.style.opacity = '1', 100);
+      img.addEventListener('click', () => {
+        img.style.opacity = '0';
+        setTimeout(() => img.remove(), 500);
+      });
+    }
+
+    // === Температурный эффект ===
+    function updateBackgroundTheme() {
+      const now = new Date();
+      const hour = now.getHours();
+      let bgColor = '#000';
+      let textColor = '#00ff41';
+      let matrixColor = '#00aa33';
+      if (hour >= 0 && hour < 6) {
+        bgColor = '#00001a';
+        textColor = '#00ccff';
+        matrixColor = '#0088aa';
+      } else if (hour >= 7 && hour < 18) {
+        bgColor = '#000000';
+        textColor = '#ffff88';
+        matrixColor = '#aaaa00';
+      } else {
+        bgColor = '#1a0022';
+        textColor = '#ff88ff';
+        matrixColor = '#aa55aa';
+      }
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      const secretBtn = document.getElementById('secret-btn');
+      if (secretBtn) {
+        secretBtn.style.color = textColor;
+        secretBtn.style.borderColor = textColor;
+        secretBtn.style.textShadow = `0 0 8px ${textColor}`;
+      }
+      document.querySelectorAll('h3, .numpad-btn, #pass-display').forEach(el => {
+        el.style.color = textColor;
+        if (el.classList.contains('numpad-btn')) el.style.borderColor = textColor;
+      });
+      return matrixColor;
+    }
+
+    // === Matrix фон ===
+    const cjkChars = '日月山水火木金土天人女子大小上下中左右田目耳口手心白赤青黒金新年福寿喜楽夢星空海川森花雪雨風光電神龍虎犬猫鳥魚花園寺神社宮城道武文理学愛平和希望未来夢友家族元気健康幸運繁栄';
+    const hangulChars = '가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허';
+    const extraChars = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyz0123456789@#$%&*🎄✨❄️☃️🎁🎇';
+    const chars = cjkChars + hangulChars + extraChars;
+    const charArray = chars.split('');
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const fontSize = 16;
+    const columnSpacing = 24;
+    const columns = Math.floor(canvas.width / columnSpacing);
+    const drops = Array(columns).fill().map(() => Math.floor(Math.random() * canvas.height / fontSize));
+    let currentMatrixColor = '#00aa33';
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = currentMatrixColor;
+      ctx.font = `${fontSize}px monospace`;
+      for (let i = 0; i < drops.length; i++) {
+        const text = charArray[Math.floor(Math.random() * charArray.length)];
+        ctx.fillText(text, i * columnSpacing, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 60);
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    currentMatrixColor = updateBackgroundTheme();
+    setInterval(() => { currentMatrixColor = updateBackgroundTheme(); }, 300000);
+
+    // === Печатающийся текст ===
+    const greeting = document.getElementById('greeting');
+    const fullText = 'С новым годом, моя родная!';
+    let i_text = 0;
+    function typeWriter() {
+      if (i_text < fullText.length) {
+        greeting.textContent += fullText.charAt(i_text);
+        i_text++;
+        setTimeout(typeWriter, 120);
+      }
+    }
+    setTimeout(typeWriter, 1000);
+  </script>
+</body>
+</html>
