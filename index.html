@@ -164,11 +164,11 @@
       background: rgba(0, 255, 65, 0.1);
     }
 
-    /* Котик внутри модального окна */
-    .cat-in-modal {
+    /* Котик Манеки-нэко внутри модального окна */
+    .cat-maneki {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       margin: 20px auto 0;
       pointer-events: none;
     }
@@ -180,7 +180,7 @@
       background: #fff;
       border-radius: 50% 50% 50% 50%;
       top: 0;
-      left: 10px;
+      left: 20px;
       box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
     }
 
@@ -191,7 +191,7 @@
       background: #fff;
       border-radius: 50%;
       top: -15px;
-      left: 15px;
+      left: 25px;
       box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
     }
 
@@ -199,74 +199,117 @@
       position: absolute;
       width: 0;
       height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 15px solid #fff;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 20px solid #fff;
       top: -10px;
     }
 
     .cat-ear.left {
-      left: 10px;
+      left: 15px;
       transform: rotate(-30deg);
     }
 
     .cat-ear.right {
-      right: 10px;
+      right: 15px;
       transform: rotate(30deg);
     }
 
     .cat-eye {
       position: absolute;
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       background: #000;
       border-radius: 50%;
       top: 15px;
     }
 
     .cat-eye.left {
-      left: 12px;
+      left: 15px;
     }
 
     .cat-eye.right {
-      right: 12px;
+      right: 15px;
     }
 
     .cat-nose {
       position: absolute;
       width: 6px;
       height: 6px;
-      background: #ffcc00;
+      background: #ff69b4;
       border-radius: 50%;
       top: 25px;
-      left: 22px;
+      left: 27px;
     }
 
     .cat-mouth {
       position: absolute;
-      width: 10px;
-      height: 3px;
+      width: 12px;
+      height: 4px;
       border-bottom: 2px solid #000;
       border-radius: 50%;
       top: 30px;
-      left: 20px;
+      left: 24px;
     }
 
     .cat-paw {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #fff;
       border-radius: 50%;
       bottom: -5px;
     }
 
     .cat-paw.left {
-      left: 15px;
+      left: 20px;
     }
 
     .cat-paw.right {
-      right: 15px;
+      right: 20px;
+    }
+
+    /* Поднятая лапка */
+    .cat-wave {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #fff;
+      border-radius: 50%;
+      top: 10px;
+      right: -15px;
+      box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+      animation: wave 2s infinite ease-in-out;
+    }
+
+    @keyframes wave {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(10deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* Колокольчик */
+    .cat-bell {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #ffcc00;
+      border-radius: 50%;
+      top: 30px;
+      left: 27px;
+      box-shadow: 0 0 5px #ffcc00;
+    }
+
+    /* Золотая монета */
+    .cat-coin {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ffcc00;
+      border-radius: 50%;
+      bottom: 5px;
+      left: 25px;
+      box-shadow: 0 0 5px #ffcc00;
     }
 
     .heart,
@@ -299,20 +342,23 @@
       #greeting { font-size: 1.6rem; padding: 0 1rem; }
       #secret-btn { font-size: 1rem; padding: 8px 16px; }
       .numpad-btn { padding: 10px 0; font-size: 1.1rem; }
-      .cat-in-modal { width: 60px; height: 60px; }
-      .cat-body { width: 45px; height: 38px; left: 7px; }
-      .cat-head { width: 38px; height: 38px; top: -12px; left: 10px; }
-      .cat-ear { border-bottom: 12px solid #fff; }
-      .cat-ear.left { left: 8px; }
-      .cat-ear.right { right: 8px; }
-      .cat-eye { width: 5px; height: 5px; }
-      .cat-eye.left { left: 10px; }
-      .cat-eye.right { right: 10px; }
-      .cat-nose { width: 5px; height: 5px; left: 18px; }
-      .cat-mouth { width: 8px; height: 2px; left: 16px; }
-      .cat-paw { width: 6px; height: 6px; }
-      .cat-paw.left { left: 10px; }
-      .cat-paw.right { right: 10px; }
+      .cat-maneki { width: 80px; height: 80px; }
+      .cat-body { width: 48px; height: 40px; left: 16px; }
+      .cat-head { width: 40px; height: 40px; top: -12px; left: 20px; }
+      .cat-ear { border-bottom: 16px solid #fff; }
+      .cat-ear.left { left: 12px; }
+      .cat-ear.right { right: 12px; }
+      .cat-eye { width: 6px; height: 6px; }
+      .cat-eye.left { left: 12px; }
+      .cat-eye.right { right: 12px; }
+      .cat-nose { width: 5px; height: 5px; left: 22px; }
+      .cat-mouth { width: 10px; height: 3px; left: 20px; }
+      .cat-paw { width: 8px; height: 8px; }
+      .cat-paw.left { left: 16px; }
+      .cat-paw.right { right: 16px; }
+      .cat-wave { width: 12px; height: 12px; top: 8px; right: -12px; }
+      .cat-bell { width: 6px; height: 6px; left: 22px; }
+      .cat-coin { width: 16px; height: 16px; bottom: 3px; left: 20px; }
     }
   </style>
 </head>
@@ -327,7 +373,7 @@
       <h3>🔒 Введите код доступа</h3>
       <div id="pass-display">----</div>
       <div class="error" id="error-msg"></div>
-      <div class="hint" id="hint-msg">🔑 2-й месяц, 3-й день — твой особенный день.</div>
+      <div class="hint" id="hint-msg">🔑 3-й месяц, 2-й день — твой особенный день.</div>
       <div id="numpad">
         <button class="numpad-btn" data-val="1">1</button>
         <button class="numpad-btn" data-val="2">2</button>
@@ -342,8 +388,8 @@
         <button class="numpad-btn" data-val="0">0</button>
         <button class="numpad-btn action" id="btn-submit">✅ ВВОД</button>
       </div>
-      <!-- Котик внутри модального окна -->
-      <div class="cat-in-modal">
+      <!-- Котик Манеки-нэко -->
+      <div class="cat-maneki">
         <div class="cat-body"></div>
         <div class="cat-head">
           <div class="cat-ear left"></div>
@@ -352,9 +398,12 @@
           <div class="cat-eye right"></div>
           <div class="cat-nose"></div>
           <div class="cat-mouth"></div>
+          <div class="cat-bell"></div>
         </div>
         <div class="cat-paw left"></div>
         <div class="cat-paw right"></div>
+        <div class="cat-wave"></div>
+        <div class="cat-coin"></div>
       </div>
     </div>
   </div>
@@ -363,7 +412,7 @@
     // === Настройки ===
     const CORRECT_PASSWORD = "0203";
     const SECRET_MESSAGE = "Ты — свет в этой жизни. Пусть каждый твой день будет таким же ярким, как эта ночь. ❤️";
-    const HINT_TEXT = "🔑 2-й месяц, 3-й день — твой особенный день.";
+    const HINT_TEXT = "🔑 3-й месяц, 2-й день — твой особенный день.";
     const OPENING_IMAGE = "bum.jpg";
 
     // === Звуки ===
@@ -383,7 +432,7 @@
       audio.play().catch(() => {});
     }
 
-    // === КЛАВИАТУРА И ПАРОЛЬ ===
+    // === КЛАВИАТУRA И ПАРОЛЬ ===
     const secretBtn = document.getElementById('secret-btn');
     const modal = document.getElementById('password-modal');
     const passDisplay = document.getElementById('pass-display');
@@ -412,7 +461,6 @@
       hintMsg.classList.remove('show');
       updateDisplay();
       modal.style.display = 'flex';
-      // При первом клике — разрешаем звуки
       soundEnabled = true;
     });
 
