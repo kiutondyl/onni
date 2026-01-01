@@ -291,307 +291,322 @@
 
   <script>
     // === Настройки ===
-    const CORRECT_PASSWORD = "0203";
-    const SECRET_MESSAGE = `Сестрёнка моя, ты — как Wi-Fi в пустыне:<br>
+const CORRECT_PASSWORD = "0203";
+const SECRET_MESSAGE = `Сестрёнка моя, ты — как Wi-Fi в пустыне:<br>
 без тебя всё грузится медленно и хочется плакать 😅<br>
 Пусть в Новом году у тебя будет:<br>
 • полный сигнал счастья 📶<br>
 • безлимитный трафик удачи<br>
 • и вечный оффлайн-режим для стресса!<br>
 С Новым годом, моя родная! ❤️`;
-    const HINT_TEXT = "🔑 3-й месяц, 2-й день — твой особенный день.";
-    const OPENING_IMAGE = "bum.jpg";
+const HINT_TEXT = "🔑 3-й месяц, 2-й день — твой особенный день.";
+const OPENING_IMAGE = "bum.jpg";
 
-    // === Звуки ===
-    let soundEnabled = false;
+// === Звуки ===
+let soundEnabled = false;
 
-    function playSound(type) {
-      if (!soundEnabled) return;
-      const audio = new Audio();
-      if (type === 'click') {
-        audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // короткий бип
-      } else if (type === 'success') {
-        audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // колокольчик
-      } else if (type === 'heart') {
-        audio.src = 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // сердечко
-      }
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    }
+function playSound(type) {
+  if (!soundEnabled) return;
+  const audio = new Audio();
+  if (type === 'click') {
+    audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // короткий бип
+  } else if (type === 'success') {
+    audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // колокольчик
+  } else if (type === 'heart') {
+    audio.src = 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // сердечко
+  }
+  audio.volume = 0.3;
+  audio.play().catch(() => {});
+}
 
-    // === Загрузочный экран ===
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loading-screen').style.opacity = '0';
-        setTimeout(() => {
-          document.getElementById('loading-screen').style.display = 'none';
-        }, 500);
-      }, 2000);
-    });
+// === Загрузочный экран ===
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'none';
+    }, 500);
+  }, 2000);
+});
 
-    // === КЛАВИАТУРА И ПАРОЛЬ ===
-    const secretBtn = document.getElementById('secret-btn');
-    const modal = document.getElementById('password-modal');
-    const passDisplay = document.getElementById('pass-display');
-    const errorMsg = document.getElementById('error-msg');
-    const hintMsg = document.getElementById('hint-msg');
-    const clearBtn = document.getElementById('btn-clear');
-    const submitBtn = document.getElementById('btn-submit');
-    const numpadBtns = document.querySelectorAll('.numpad-btn[data-val]');
+// === КЛАВИАТУРА И ПАРОЛЬ ===
+const secretBtn = document.getElementById('secret-btn');
+const modal = document.getElementById('password-modal');
+const passDisplay = document.getElementById('pass-display');
+const errorMsg = document.getElementById('error-msg');
+const hintMsg = document.getElementById('hint-msg');
+const clearBtn = document.getElementById('btn-clear');
+const submitBtn = document.getElementById('btn-submit');
+const numpadBtns = document.querySelectorAll('.numpad-btn[data-val]');
 
-    let currentInput = "";
-    let attempts = 0;
-    const maxAttempts = 3;
+let currentInput = "";
+let attempts = 0;
+const maxAttempts = 3;
 
-    function updateDisplay() {
-      if (currentInput.length === 0) {
-        passDisplay.textContent = "----";
-      } else {
-        passDisplay.textContent = "•".repeat(currentInput.length).padEnd(4, "-");
-      }
-    }
+function updateDisplay() {
+  if (currentInput.length === 0) {
+    passDisplay.textContent = "----";
+  } else {
+    passDisplay.textContent = "•".repeat(currentInput.length).padEnd(4, "-");
+  }
+}
 
-    secretBtn.addEventListener('click', () => {
-      attempts = 0;
-      currentInput = "";
-      errorMsg.textContent = '';
-      hintMsg.classList.remove('show');
-      updateDisplay();
-      modal.style.display = 'flex';
-      soundEnabled = true;
-    });
+secretBtn.addEventListener('click', () => {
+  attempts = 0;
+  currentInput = "";
+  errorMsg.textContent = '';
+  hintMsg.classList.remove('show');
+  updateDisplay();
+  modal.style.display = 'flex';
+  soundEnabled = true;
+});
 
-    numpadBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (currentInput.length < 4) {
-          currentInput += btn.dataset.val;
-          updateDisplay();
-          playSound('click');
-        }
-      });
-    });
-
-    clearBtn.addEventListener('click', () => {
-      currentInput = "";
+numpadBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (currentInput.length < 4) {
+      currentInput += btn.dataset.val;
       updateDisplay();
       playSound('click');
-    });
+    }
+  });
+});
 
-    submitBtn.addEventListener('click', checkPassword);
+clearBtn.addEventListener('click', () => {
+  currentInput = "";
+  updateDisplay();
+  playSound('click');
+});
 
-    function checkPassword() {
-      if (currentInput.length < 4) {
-        errorMsg.textContent = '❌ Код должен содержать 4 цифры.';
-        return;
-      }
+submitBtn.addEventListener('click', checkPassword);
 
-      if (currentInput === CORRECT_PASSWORD) {
-        playSound('success');
-        // Анимация "взлома"
-        secretBtn.innerHTML = `<span style="color: #00ff41;">> [✓] Аутентификация...</span><br><span style="color: #00ff41;">> [✓] Доступ разрешён.</span>`;
-        secretBtn.style.cssText = `
-          color: #ff69b4;
-          border: 1px solid #ff69b4;
-          box-shadow: 0 0 15px #ff69b4;
-          text-shadow: 0 0 10px #ff69b4;
-          font-size: 1rem;
-        `;
-        secretBtn.disabled = true;
-        modal.style.display = 'none';
+function checkPassword() {
+  if (currentInput.length < 4) {
+    errorMsg.textContent = '❌ Код должен содержать 4 цифры.';
+    return;
+  }
 
-        // Показываем открытку через 1 секунду
+  if (currentInput === CORRECT_PASSWORD) {
+    playSound('success');
+    modal.style.display = 'none';
+
+    // Показываем "Аутентификация..."
+    secretBtn.innerHTML = `<span style="color: #00ff41;">> [✓] Аутентификация...</span>`;
+    secretBtn.disabled = true;
+
+    // Ждём 1.5 секунды, потом "Доступ разрешён."
+    setTimeout(() => {
+      secretBtn.innerHTML = `<span style="color: #00ff41;">> [✓] Доступ разрешён.</span>`;
+      playSound('success');
+
+      // Ждём ещё 1.5 секунды, потом показываем картинку
+      setTimeout(() => {
+        showOpeningImage();
+
+        // Ждём, пока картинка закроется, потом показываем послание
         setTimeout(() => {
-          showOpeningImage();
-        }, 1000);
-      } else {
-        attempts++;
-        errorMsg.textContent = '❌ Неверный код.';
-        currentInput = "";
-        updateDisplay();
+          secretBtn.innerHTML = SECRET_MESSAGE;
+          secretBtn.style.cssText = `
+            color: #ff69b4;
+            border: 1px solid #ff69b4;
+            box-shadow: 0 0 15px #ff69b4;
+            text-shadow: 0 0 10px #ff69b4;
+            font-size: 1rem;
+            text-align: center;
+            line-height: 1.5;
+          `;
+        }, 3000); // ждём 3 секунды (время, пока картинка открыта)
+      }, 1500);
+    }, 1500);
+  } else {
+    attempts++;
+    errorMsg.textContent = '❌ Неверный код.';
+    currentInput = "";
+    updateDisplay();
 
-        if (attempts >= 2 && attempts < maxAttempts) {
-          hintMsg.classList.add('show');
-        }
-
-        if (attempts >= maxAttempts) {
-          errorMsg.textContent = '🔒 Доступ заблокирован.';
-          setTimeout(() => {
-            modal.style.display = 'none';
-            secretBtn.disabled = true;
-            secretBtn.textContent = '🔒 ДОСТУП ЗАКРЫТ';
-            secretBtn.style.color = '#ff0000';
-            secretBtn.style.border = '1px solid #ff0000';
-          }, 1500);
-        }
-      }
+    if (attempts >= 2 && attempts < maxAttempts) {
+      hintMsg.classList.add('show');
     }
 
-    // === Easter Egg: двойной клик по котику ===
-    const catImage = document.querySelector('.cat-image');
-    let clickCount = 0;
-    let lastClickTime = 0;
-
-    catImage.addEventListener('click', () => {
-      const now = Date.now();
-      if (now - lastClickTime < 300) {
-        // Двойной клик!
-        clickCount++;
-        if (clickCount === 1) {
-          playSound('success');
-          const easterMsg = document.createElement('div');
-          easterMsg.innerHTML = `<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 1px solid #00ff41; padding: 20px; text-align: center; box-shadow: 0 0 20px #00ff41; z-index: 999; color: #00ff41; font-family: 'Courier New', monospace; font-size: 1.2rem; white-space: pre-line;">
-            Система обнаружила несанкционированный доступ.<br>
-            Но... раз это ты — разрешено.<br>
-            🎁 Ты — лучшая сестра на свете.<br>
-            С Новым годом, моя родная! ❤️
-          </div>`;
-          document.body.appendChild(easterMsg);
-          setTimeout(() => {
-            easterMsg.style.opacity = '0';
-            setTimeout(() => easterMsg.remove(), 500);
-          }, 3000);
-        }
-      }
-      lastClickTime = now;
-    });
-
-    // === Эффекты клика по фону ===
-    document.body.addEventListener('click', (e) => {
-      if (e.target.id === 'secret-btn' || e.target.closest('#password-modal')) return;
-      const x = e.clientX;
-      const y = e.clientY;
-      for (let i = 0; i < 5; i++) {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.innerHTML = '❤️';
-        heart.style.left = `${x}px`;
-        heart.style.top = `${y}px`;
-        const colors = ['#ff69b4', '#ff4545', '#ffffff'];
-        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1600);
-      }
-      for (let i = 0; i < 8; i++) {
-        const snow = document.createElement('div');
-        snow.classList.add('snowflake');
-        snow.innerHTML = '❄';
-        snow.style.left = `${x + (Math.random() - 0.5) * 100}px`;
-        snow.style.top = `${y}px`;
-        snow.style.fontSize = `${0.8 + Math.random() * 1}rem`;
-        snow.style.opacity = 0.7 + Math.random() * 0.3;
-        document.body.appendChild(snow);
-        setTimeout(() => snow.remove(), 3100);
-      }
-      playSound('heart');
-    });
-
-    // === Открытка ===
-    function showOpeningImage() {
-      const img = document.createElement('img');
-      img.src = OPENING_IMAGE;
-      img.alt = 'Новогодняя открытка';
-      img.style.cssText = `
-        position: fixed;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 90%; max-height: 90vh;
-        border: 3px solid #00ff41;
-        box-shadow: 0 0 20px #00ff41;
-        z-index: 100;
-        cursor: pointer;
-        transition: opacity 0.5s;
-        opacity: 0;
-      `;
-      document.body.appendChild(img);
-      setTimeout(() => img.style.opacity = '1', 100);
-      img.addEventListener('click', () => {
-        img.style.opacity = '0';
-        setTimeout(() => img.remove(), 500);
-      });
+    if (attempts >= maxAttempts) {
+      errorMsg.textContent = '🔒 Доступ заблокирован.';
+      setTimeout(() => {
+        modal.style.display = 'none';
+        secretBtn.disabled = true;
+        secretBtn.textContent = '🔒 ДОСТУП ЗАКРЫТ';
+        secretBtn.style.color = '#ff0000';
+        secretBtn.style.border = '1px solid #ff0000';
+      }, 1500);
     }
+  }
+}
 
-    // === Температурный эффект ===
-    function updateBackgroundTheme() {
-      const now = new Date();
-      const hour = now.getHours();
-      let bgColor = '#000';
-      let textColor = '#00ff41';
-      let matrixColor = '#00aa33';
-      if (hour >= 0 && hour < 6) {
-        bgColor = '#00001a';
-        textColor = '#00ccff';
-        matrixColor = '#0088aa';
-      } else if (hour >= 7 && hour < 18) {
-        bgColor = '#000000';
-        textColor = '#ffff88';
-        matrixColor = '#aaaa00';
-      } else {
-        bgColor = '#1a0022';
-        textColor = '#ff88ff';
-        matrixColor = '#aa55aa';
-      }
-      document.body.style.backgroundColor = bgColor;
-      document.body.style.color = textColor;
-      const secretBtn = document.getElementById('secret-btn');
-      if (secretBtn) {
-        secretBtn.style.color = textColor;
-        secretBtn.style.borderColor = textColor;
-        secretBtn.style.textShadow = `0 0 8px ${textColor}`;
-      }
-      document.querySelectorAll('h3, .numpad-btn, #pass-display').forEach(el => {
-        el.style.color = textColor;
-        if (el.classList.contains('numpad-btn')) el.style.borderColor = textColor;
-      });
-      return matrixColor;
-    }
+// === Easter Egg: двойной клик по котику ===
+const catImage = document.querySelector('.cat-image');
+let clickCount = 0;
+let lastClickTime = 0;
 
-    // === Matrix фон ===
-    const cjkChars = '日月山水火木金土天人女子大小上下中左右田目耳口手心白赤青黒金新年福寿喜楽夢星空海川森花雪雨風光電神龍虎犬猫鳥魚花園寺神社宮城道武文理学愛平和希望未来夢友家族元気健康幸運繁栄';
-    const hangulChars = '가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허';
-    const extraChars = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyz0123456789@#$%&*🎄✨❄️☃️🎁🎇';
-    const chars = cjkChars + hangulChars + extraChars;
-    const charArray = chars.split('');
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const fontSize = 16;
-    const columnSpacing = 24;
-    const columns = Math.floor(canvas.width / columnSpacing);
-    const drops = Array(columns).fill().map(() => Math.floor(Math.random() * canvas.height / fontSize));
-    let currentMatrixColor = '#00aa33';
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = currentMatrixColor;
-      ctx.font = `${fontSize}px monospace`;
-      for (let i = 0; i < drops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
-        ctx.fillText(text, i * columnSpacing, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) drops[i] = 0;
-        drops[i]++;
-      }
+catImage.addEventListener('click', () => {
+  const now = Date.now();
+  if (now - lastClickTime < 300) {
+    // Двойной клик!
+    clickCount++;
+    if (clickCount === 1) {
+      playSound('success');
+      const easterMsg = document.createElement('div');
+      easterMsg.innerHTML = `<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 1px solid #00ff41; padding: 20px; text-align: center; box-shadow: 0 0 20px #00ff41; z-index: 999; color: #00ff41; font-family: 'Courier New', monospace; font-size: 1.2rem; white-space: pre-line;">
+        Система обнаружила несанкционированный доступ.<br>
+        Но... раз это ты — разрешено.<br>
+        🎁 Ты — лучшая сестра на свете.<br>
+        С Новым годом, моя родная! ❤️
+      </div>`;
+      document.body.appendChild(easterMsg);
+      setTimeout(() => {
+        easterMsg.style.opacity = '0';
+        setTimeout(() => easterMsg.remove(), 500);
+      }, 3000);
     }
-    setInterval(drawMatrix, 60);
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-    currentMatrixColor = updateBackgroundTheme();
-    setInterval(() => { currentMatrixColor = updateBackgroundTheme(); }, 300000);
+  }
+  lastClickTime = now;
+});
 
-    // === Печатающийся текст ===
-    const greeting = document.getElementById('greeting');
-    const fullText = 'С новым годом, моя родная!';
-    let i_text = 0;
-    function typeWriter() {
-      if (i_text < fullText.length) {
-        greeting.textContent += fullText.charAt(i_text);
-        i_text++;
-        setTimeout(typeWriter, 120);
-      }
-    }
-    setTimeout(typeWriter, 1000);
+// === Эффекты клика по фону ===
+document.body.addEventListener('click', (e) => {
+  if (e.target.id === 'secret-btn' || e.target.closest('#password-modal')) return;
+  const x = e.clientX;
+  const y = e.clientY;
+  for (let i = 0; i < 5; i++) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerHTML = '❤️';
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+    const colors = ['#ff69b4', '#ff4545', '#ffffff'];
+    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1600);
+  }
+  for (let i = 0; i < 8; i++) {
+    const snow = document.createElement('div');
+    snow.classList.add('snowflake');
+    snow.innerHTML = '❄';
+    snow.style.left = `${x + (Math.random() - 0.5) * 100}px`;
+    snow.style.top = `${y}px`;
+    snow.style.fontSize = `${0.8 + Math.random() * 1}rem`;
+    snow.style.opacity = 0.7 + Math.random() * 0.3;
+    document.body.appendChild(snow);
+    setTimeout(() => snow.remove(), 3100);
+  }
+  playSound('heart');
+});
+
+// === Открытка ===
+function showOpeningImage() {
+  const img = document.createElement('img');
+  img.src = OPENING_IMAGE;
+  img.alt = 'Новогодняя открытка';
+  img.style.cssText = `
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%; max-height: 90vh;
+    border: 3px solid #00ff41;
+    box-shadow: 0 0 20px #00ff41;
+    z-index: 100;
+    cursor: pointer;
+    transition: opacity 0.5s;
+    opacity: 0;
+  `;
+  document.body.appendChild(img);
+  setTimeout(() => img.style.opacity = '1', 100);
+  img.addEventListener('click', () => {
+    img.style.opacity = '0';
+    setTimeout(() => img.remove(), 500);
+  });
+}
+
+// === Температурный эффект ===
+function updateBackgroundTheme() {
+  const now = new Date();
+  const hour = now.getHours();
+  let bgColor = '#000';
+  let textColor = '#00ff41';
+  let matrixColor = '#00aa33';
+  if (hour >= 0 && hour < 6) {
+    bgColor = '#00001a';
+    textColor = '#00ccff';
+    matrixColor = '#0088aa';
+  } else if (hour >= 7 && hour < 18) {
+    bgColor = '#000000';
+    textColor = '#ffff88';
+    matrixColor = '#aaaa00';
+  } else {
+    bgColor = '#1a0022';
+    textColor = '#ff88ff';
+    matrixColor = '#aa55aa';
+  }
+  document.body.style.backgroundColor = bgColor;
+  document.body.style.color = textColor;
+  const secretBtn = document.getElementById('secret-btn');
+  if (secretBtn) {
+    secretBtn.style.color = textColor;
+    secretBtn.style.borderColor = textColor;
+    secretBtn.style.textShadow = `0 0 8px ${textColor}`;
+  }
+  document.querySelectorAll('h3, .numpad-btn, #pass-display').forEach(el => {
+    el.style.color = textColor;
+    if (el.classList.contains('numpad-btn')) el.style.borderColor = textColor;
+  });
+  return matrixColor;
+}
+
+// === Matrix фон ===
+const cjkChars = '日月山水火木金土天人女子大小上下中左右田目耳口手心白赤青黒金新年福寿喜楽夢星空海川森花雪雨風光電神龍虎犬猫鳥魚花園寺神社宮城道武文理学愛平和希望未来夢友家族元気健康幸運繁栄';
+const hangulChars = '가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허';
+const extraChars = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyz0123456789@#$%&*🎄✨❄️☃️🎁🎇';
+const chars = cjkChars + hangulChars + extraChars;
+const charArray = chars.split('');
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const fontSize = 16;
+const columnSpacing = 24;
+const columns = Math.floor(canvas.width / columnSpacing);
+const drops = Array(columns).fill().map(() => Math.floor(Math.random() * canvas.height / fontSize));
+let currentMatrixColor = '#00aa33';
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = currentMatrixColor;
+  ctx.font = `${fontSize}px monospace`;
+  for (let i = 0; i < drops.length; i++) {
+    const text = charArray[Math.floor(Math.random() * charArray.length)];
+    ctx.fillText(text, i * columnSpacing, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 60);
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+currentMatrixColor = updateBackgroundTheme();
+setInterval(() => { currentMatrixColor = updateBackgroundTheme(); }, 300000);
+
+// === Печатающийся текст ===
+const greeting = document.getElementById('greeting');
+const fullText = 'С новым годом, моя родная!';
+let i_text = 0;
+function typeWriter() {
+  if (i_text < fullText.length) {
+    greeting.textContent += fullText.charAt(i_text);
+    i_text++;
+    setTimeout(typeWriter, 120);
+  }
+}
+setTimeout(typeWriter, 1000);
   </script>
 </body>
 </html>
+
