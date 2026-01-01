@@ -290,7 +290,7 @@
   </div>
 
   <script>
-    // === Настройки ===
+   // === Настройки ===
 const CORRECT_PASSWORD = "0203";
 const SECRET_MESSAGE = `Сестрёнка моя, ты — как Wi-Fi в пустыне:<br>
 без тебя всё грузится медленно и хочется плакать 😅<br>
@@ -309,11 +309,11 @@ function playSound(type) {
   if (!soundEnabled) return;
   const audio = new Audio();
   if (type === 'click') {
-    audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // короткий бип
+    audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA=';
   } else if (type === 'success') {
-    audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // колокольчик
+    audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA=';
   } else if (type === 'heart') {
-    audio.src = 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA='; // сердечко
+    audio.src = 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AQAAAAAAAAAAAAA=';
   }
   audio.volume = 0.3;
   audio.play().catch(() => {});
@@ -321,12 +321,20 @@ function playSound(type) {
 
 // === Загрузочный экран ===
 window.addEventListener('load', () => {
+  const loadingText = document.getElementById('loading-text');
+  loadingText.innerHTML = 'Инициализация новогоднего протокола...';
   setTimeout(() => {
-    document.getElementById('loading-screen').style.opacity = '0';
+    loadingText.innerHTML = 'Запуск оберега...';
     setTimeout(() => {
-      document.getElementById('loading-screen').style.display = 'none';
-    }, 500);
-  }, 2000);
+      loadingText.innerHTML = 'Готово.';
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading-screen').style.display = 'none';
+        }, 500);
+      }, 1000);
+    }, 1000);
+  }, 1000);
 });
 
 // === КЛАВИАТУРА И ПАРОЛЬ ===
@@ -389,11 +397,11 @@ function checkPassword() {
     playSound('success');
     modal.style.display = 'none';
 
-    // Показываем "Аутентификация..."
-    secretBtn.innerHTML = `<span style="color: #00ff41;">> [✓] Аутентификация...</span>`;
+    // Аутентификация — без галочки
+    secretBtn.innerHTML = `<span style="color: #00ff41;">> [ ] Аутентификация...</span>`;
     secretBtn.disabled = true;
 
-    // Ждём 1.5 секунды, потом "Доступ разрешён."
+    // Ждём 1.5 секунды, потом "Доступ разрешён" — с галочкой
     setTimeout(() => {
       secretBtn.innerHTML = `<span style="color: #00ff41;">> [✓] Доступ разрешён.</span>`;
       playSound('success');
@@ -414,7 +422,7 @@ function checkPassword() {
             text-align: center;
             line-height: 1.5;
           `;
-        }, 3000); // ждём 3 секунды (время, пока картинка открыта)
+        }, 3000);
       }, 1500);
     }, 1500);
   } else {
@@ -440,7 +448,7 @@ function checkPassword() {
   }
 }
 
-// === Easter Egg: двойной клик по котику ===
+// === Easter Egg: двойной клик по котику (сбрасывается после отображения) ===
 const catImage = document.querySelector('.cat-image');
 let clickCount = 0;
 let lastClickTime = 0;
@@ -448,9 +456,8 @@ let lastClickTime = 0;
 catImage.addEventListener('click', () => {
   const now = Date.now();
   if (now - lastClickTime < 300) {
-    // Двойной клик!
     clickCount++;
-    if (clickCount === 1) {
+    if (clickCount === 2) { // только на 2 клика
       playSound('success');
       const easterMsg = document.createElement('div');
       easterMsg.innerHTML = `<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 1px solid #00ff41; padding: 20px; text-align: center; box-shadow: 0 0 20px #00ff41; z-index: 999; color: #00ff41; font-family: 'Courier New', monospace; font-size: 1.2rem; white-space: pre-line;">
@@ -463,8 +470,11 @@ catImage.addEventListener('click', () => {
       setTimeout(() => {
         easterMsg.style.opacity = '0';
         setTimeout(() => easterMsg.remove(), 500);
-      }, 3000);
+      }, 5000); // дольше показываем (5 секунд)
+      clickCount = 0; // сброс
     }
+  } else {
+    clickCount = 1; // первый клик
   }
   lastClickTime = now;
 });
@@ -609,4 +619,5 @@ setTimeout(typeWriter, 1000);
   </script>
 </body>
 </html>
+
 
